@@ -67,24 +67,16 @@ const renderActiveNote = () => {
   }
 };
 
-const working = () => {
-  console.log("howyadoing");
-};
-
 const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
   };
 
-  saveNote(newNote)
-    .then(() => {
-      working();
-      console.log("hemlo?");
-    })
-    .catch(() => {
-      console.log("something went wrong");
-    });
+  saveNote(newNote).then(() => {
+    getAndRenderNotes();
+    renderActiveNote();
+  });
 };
 
 // Delete the clicked note

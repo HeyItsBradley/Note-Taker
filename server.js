@@ -13,7 +13,6 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
 app.use(express.static("public"));
 
 app.get("/notes", (req, res) => {
@@ -39,15 +38,14 @@ const readAndAppend = (content, file) => {
   });
 };
 
-
-
 // app.get("/api/notes", (req, res) => res.json(noteData));
 app.get("/api/notes", (req, res) => {
+  console.info(`${req.method} request received for notes`);
   readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
 });
 
 app.post("/api/notes", (req, res) => {
-  console.log(req.body);
+  console.info(`${req.method} request received to add a note`);
 
   const { title, text } = req.body;
 
@@ -58,8 +56,10 @@ app.post("/api/notes", (req, res) => {
       id: randomUUID(),
     };
 
-    let giveBack = readAndAppend(newEntry, "./db/db.json");
-    return giveBack;
+    readAndAppend(newEntry, "./db/db.json");
+    res.json(`New note added !`);
+  } else {
+    res.error("error in adding note");
   }
 });
 
