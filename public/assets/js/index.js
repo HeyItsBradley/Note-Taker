@@ -4,8 +4,6 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
-console.log("the index file has been run");
-
 if (window.location.pathname === "/notes") {
   noteTitle = document.querySelector(".note-title");
   noteText = document.querySelector(".note-textarea");
@@ -34,7 +32,7 @@ const getNotes = () =>
       "Content-Type": "application/json",
     },
   });
-
+//TODO: make this resolve somehow, the .then isnt working
 const saveNote = (note) =>
   fetch("/api/notes", {
     method: "POST",
@@ -54,6 +52,7 @@ const deleteNote = (id) =>
 
 const renderActiveNote = () => {
   hide(saveNoteBtn);
+  console.log("renderActiveNote has gone off");
 
   if (activeNote.id) {
     noteTitle.setAttribute("readonly", true);
@@ -68,15 +67,24 @@ const renderActiveNote = () => {
   }
 };
 
+const working = () => {
+  console.log("howyadoing");
+};
+
 const handleNoteSave = () => {
   const newNote = {
     title: noteTitle.value,
     text: noteText.value,
   };
-  saveNote(newNote).then(() => {
-    getAndRenderNotes();
-    renderActiveNote();
-  });
+
+  saveNote(newNote)
+    .then(() => {
+      working();
+      console.log("hemlo?");
+    })
+    .catch(() => {
+      console.log("something went wrong");
+    });
 };
 
 // Delete the clicked note
@@ -100,7 +108,6 @@ const handleNoteDelete = (e) => {
 // Sets the activeNote and displays it
 const handleNoteView = (e) => {
   e.preventDefault();
-  console.log("span has been clicked");
   activeNote = JSON.parse(e.target.parentElement.getAttribute("data-note"));
   renderActiveNote();
 };
@@ -136,8 +143,9 @@ const renderNoteList = async (notes) => {
     const spanEl = document.createElement("span");
     spanEl.classList.add("list-item-title");
     spanEl.innerText = text;
-    liEl.append(spanEl);
     spanEl.addEventListener("click", handleNoteView);
+
+    liEl.append(spanEl);
 
     if (delBtn) {
       const delBtnEl = document.createElement("i");

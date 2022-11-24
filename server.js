@@ -1,14 +1,26 @@
-const exp = require("constants");
-const { randomUUID } = require("crypto");
-const { response } = require("express");
-const express = require("express");
-const { fstat } = require("fs");
-const { request } = require("http");
-const app = express();
-const PORT = 3001;
 const path = require("path");
 const noteData = require("./db/db.json");
 const fs = require("fs");
+const express = require("express");
+const { randomUUID } = require("crypto");
+
+const util = require("util");
+
+const PORT = 3001;
+
+const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+
+app.use(express.static("public"));
+
+app.get("/notes", (req, res) => {
+  res.sendFile(path.join(__dirname, "/public/notes.html"));
+});
+
+const readFromFile = util.promisify(fs.readFile);
 
 const writeToFile = (destination, content) =>
   fs.writeFile(destination, JSON.stringify(content), (err) =>
@@ -27,14 +39,12 @@ const readAndAppend = (content, file) => {
   });
 };
 
-app.use(express.static("public"));
-app.use(express.json());
 
-app.get("/notes", (req, res) => {
-  res.sendFile(path.join(__dirname, "/public/notes.html"));
+
+// app.get("/api/notes", (req, res) => res.json(noteData));
+app.get("/api/notes", (req, res) => {
+  readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
 });
-
-app.get("/api/notes", (req, res) => res.json(noteData));
 
 app.post("/api/notes", (req, res) => {
   console.log(req.body);
@@ -48,7 +58,8 @@ app.post("/api/notes", (req, res) => {
       id: randomUUID(),
     };
 
-    readAndAppend(newEntry, "./db/db.json");
+    let giveBack = readAndAppend(newEntry, "./db/db.json");
+    return giveBack;
   }
 });
 
