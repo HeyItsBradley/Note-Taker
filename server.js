@@ -45,16 +45,10 @@ app.post("/api/notes", (req, res) => {
     const newEntry = {
       title,
       text,
-      entry_id: randomUUID(),
+      id: randomUUID(),
     };
 
-    const entryString = JSON.stringify(newEntry);
-
     readAndAppend(newEntry, "./db/db.json");
-
-    // fs.appendFile("./db/db.json", entryString, (err) =>
-    //   err ? console.error(err) : console.log("entry was appended!")
-    // );
   }
 });
 
