@@ -5,6 +5,7 @@ const express = require("express");
 const { randomUUID } = require("crypto");
 
 const util = require("util");
+const { clear } = require("console");
 
 const PORT = 3001;
 
@@ -38,6 +39,10 @@ const readAndAppend = (content, file) => {
   });
 };
 
+const clearData = () => {
+  fs.unlink("./db/db.json");
+};
+
 // app.get("/api/notes", (req, res) => res.json(noteData));
 app.get("/api/notes", (req, res) => {
   console.info(`${req.method} request received for notes`);
@@ -61,6 +66,38 @@ app.post("/api/notes", (req, res) => {
   } else {
     res.error("error in adding note");
   }
+});
+
+app.delete("/api/notes/:id", (req, res) => {
+  const { id } = req.params;
+  readFromFile("./db/db.json").then((data) => {
+    // console.info(JSON.parse(data));
+    const newData = JSON.parse(data);
+    const dataObj = newData;
+    // const noteIndex = JSON.parse(data.findIndex((n) => n.id == id));
+
+    for (let i = 0; i < dataObj.length; i++) {
+      if (dataObj[i].id === id) {
+        dataObj.splice(dataObj[i], 1);
+        fs.writeFile("./db/db.json", JSON.stringify(dataObj), (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log("success!");
+          }
+        });
+        // clearData();
+        // readAndAppend(dataObj, "./db/db.json");
+        res.json("note deleted?");
+      }
+    }
+    // JSON.parse(data.splice(noteIndex, 1));
+    return res.send;
+  });
+
+  //readfile
+  //remove note with id
+  //rewrite notes to the db.json file
 });
 
 app.get("*", (req, res) => {
