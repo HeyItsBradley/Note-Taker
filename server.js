@@ -3,9 +3,7 @@ const noteData = require("./db/db.json");
 const fs = require("fs");
 const express = require("express");
 const { randomUUID } = require("crypto");
-
 const util = require("util");
-const { clear } = require("console");
 
 const PORT = process.env.PORT || 3001;
 
@@ -15,18 +13,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(express.static("public"));
-
+//route for notes sections
 app.get("/notes", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
-
+//allows us to use promise objects and .then instead of callback functions
 const readFromFile = util.promisify(fs.readFile);
-
+//will writeFile using fs
 const writeToFile = (destination, content) =>
   fs.writeFile(destination, JSON.stringify(content), (err) =>
     err ? console.error(err) : console.info(`\nData written to ${destination}`)
   );
-
+//this will take data given and push it to write file
 const readAndAppend = (content, file) => {
   fs.readFile(file, "utf8", (err, data) => {
     if (err) {
@@ -39,12 +37,12 @@ const readAndAppend = (content, file) => {
   });
 };
 
-// app.get("/api/notes", (req, res) => res.json(noteData));
+//get requests
 app.get("/api/notes", (req, res) => {
   console.info(`${req.method} request received for notes`);
   readFromFile("./db/db.json").then((data) => res.json(JSON.parse(data)));
 });
-
+//post requests
 app.post("/api/notes", (req, res) => {
   console.info(`${req.method} request received to add a note`);
 
@@ -63,7 +61,7 @@ app.post("/api/notes", (req, res) => {
     res.error("error in adding note");
   }
 });
-
+//delete requests
 app.delete("/api/notes/:id", (req, res) => {
   const { id } = req.params;
   readFromFile("./db/db.json").then((data) => {
@@ -92,11 +90,11 @@ app.delete("/api/notes/:id", (req, res) => {
   //remove note with id
   //rewrite notes to the db.json file
 });
-
+//defaul route for homepage
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
-
+//port listener
 app.listen(PORT, () =>
   console.log(`Example app listening at http://localhost:${PORT}`)
 );
