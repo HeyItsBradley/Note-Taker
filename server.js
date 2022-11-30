@@ -7,7 +7,7 @@ const { randomUUID } = require("crypto");
 const util = require("util");
 const { clear } = require("console");
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
