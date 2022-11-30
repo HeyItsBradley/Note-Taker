@@ -71,10 +71,8 @@ app.post("/api/notes", (req, res) => {
 app.delete("/api/notes/:id", (req, res) => {
   const { id } = req.params;
   readFromFile("./db/db.json").then((data) => {
-    // console.info(JSON.parse(data));
     const newData = JSON.parse(data);
     const dataObj = newData;
-    // const noteIndex = JSON.parse(data.findIndex((n) => n.id == id));
 
     for (let i = 0; i < dataObj.length; i++) {
       if (dataObj[i].id === id) {
@@ -86,12 +84,11 @@ app.delete("/api/notes/:id", (req, res) => {
             console.log("success!");
           }
         });
-        // clearData();
-        // readAndAppend(dataObj, "./db/db.json");
+
         res.json("note deleted?");
       }
     }
-    // JSON.parse(data.splice(noteIndex, 1));
+
     return res.send;
   });
 
