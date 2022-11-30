@@ -39,10 +39,6 @@ const readAndAppend = (content, file) => {
   });
 };
 
-const clearData = () => {
-  fs.unlink("./db/db.json");
-};
-
 // app.get("/api/notes", (req, res) => res.json(noteData));
 app.get("/api/notes", (req, res) => {
   console.info(`${req.method} request received for notes`);
