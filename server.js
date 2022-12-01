@@ -1,5 +1,4 @@
 const path = require("path");
-const noteData = require("./db/db.json");
 const fs = require("fs");
 const express = require("express");
 const { randomUUID } = require("crypto");
